@@ -31,4 +31,4 @@ class TestPet:
             assert response.status_code == 404, "Код ответа не совпадает с ожидаемым"
 
         with allure.step("Проверка текстового содержимого ответа"):
-            assert response.text == "Pet not found", "Текст ошибки не совпал с ожидаемым"
+            assert response.text == "Pet not found", "Текст ошибки не совпал с ожидаемыми"
