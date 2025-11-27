@@ -18,24 +18,6 @@ def create_pet():
         assert response.status_code == 200
         return response.json()
 
-@pytest.fixture(scope="function")
-def update_pet():
-    """Фикстура для обновления питомца"""
-    with allure.step("Подготовка данных для обновления питомца в фикстуре"):
-        payload = {
-            "id": 12,
-            "name": "Buddy Updated",
-            "status": "sold"
-        }
-    return payload
 
-@pytest.fixture(scope="function")
-def delete_pet():
-    """Фикстура для удаления питомца"""
-    def _delete_pet(pet_id):
-        with allure.step(f"Удаление питомца с ID {pet_id}"):
-            response = requests.delete(url=f"{BASE_URL}/pet/{pet_id}")
-            return response
-    return _delete_pet
 
 
