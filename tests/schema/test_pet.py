@@ -149,14 +149,21 @@ class TestPet:
             ("complete", 400)
         ]
     )
-
-
     def test_get_pet_list(self, status, expected_status_code):
-        with allure.step(f"Отправка запроса на получение списка питомцев по статусу {status}"):
-            response = requests.get(url=f"{BASE_URL}/pet/findByStatus", params={"status":status})
+        with allure.step(f"Отправка запроса на получение списка питомцев по статусу '{status}'"):
+            response = requests.get(url=f"{BASE_URL}/pet/findByStatus", params={"status": status})
 
-        with allure.step("Проверка статуса ответа и формата данных"):
-            assert response.status_code == expected_status_code
-            assert isinstance(response.json(), list)
+        with allure.step(f"Проверка статуса ответа {expected_status_code}"):
+            assert response.status_code == expected_status_code, \
+                f"Ожидался статус {expected_status_code}, но получен {response.status_code}"
 
+        with allure.step("Проверка формата данных ответа"):
+            response_data = response.json()
 
+            if expected_status_code == 200:
+                assert isinstance(response_data, list), \
+                    f"Ожидался список, но получен: {type(response_data)}"
+            else:
+                assert "code" in response_data, "В ответе об ошибке отсутствует поле 'code'"
+                assert "message" in response_data, "В ответе об ошибке отсутствует поле 'message'"
+                assert response_data["code"] == 400, f"Код ошибки должен быть 400, но получен {response_data['code']}"
