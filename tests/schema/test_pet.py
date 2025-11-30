@@ -146,7 +146,7 @@ class TestPet:
             ("available", 200),
             ("sold", 200),
             ("", 400),
-            ("complete", 404)
+            ("complete", 400)
         ]
     )
 
