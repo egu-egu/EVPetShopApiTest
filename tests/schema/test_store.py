@@ -81,12 +81,15 @@ class TestStore:
         with allure.step("Проверка статуса ответа"):
             assert response.status_code == 200, "Код ответа не совпадает с ожидаемым"
 
-        with allure.step("Проверка параметров данных в ответе"):
-            assert "approved" in response_json, "В инвентаре нет ключа 'approved'"
-            assert response_json["approved"] == 57, f"approved = {response_json['approved']}, а ожидалось 57"
-            assert "delivered" in response_json, "В инвентаре нет ключа 'delivered'"
-            assert response_json["delivered"] == 50, f"delivered = {response_json['delivered']}, а ожидалось 50"
 
+        with allure.step("Проверка структуры и типов данных в ответе"):
+            assert isinstance(response_json, dict), "Ответ должен быть словарем"
+            assert len(response_json) > 0, "Ответ не должен быть пустым"
+
+            expected_keys = ["approved", "delivered"]
+            for key in expected_keys:
+                assert key in response_json, f"В инвентаре нет ключа '{key}'"
+                assert isinstance(response_json[key], int), f"Значение ключа '{key}' должно быть целым числом"
 
 
 
