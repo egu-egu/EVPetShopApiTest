@@ -72,6 +72,8 @@ class TestStore:
         with allure.step("Проверка статуса ответа"):
             assert response.status_code == 404, "Код ответа не совпадает с ожидаемым"
 
+
+
     @allure.title("Получение инвентаря в магазине")
     def test_get_inventory_store(self):
         with allure.step("Отправка запроса на получение инвентаря в магазине"):
@@ -81,17 +83,10 @@ class TestStore:
         with allure.step("Проверка статуса ответа"):
             assert response.status_code == 200, "Код ответа не совпадает с ожидаемым"
 
+        with allure.step("Проверка точного соответствия инвентаря"):
+            expected_inventory = {"approved": 57, "delivered": 50}
 
-        with allure.step("Проверка структуры и типов данных в ответе"):
-            assert isinstance(response_json, dict), "Ответ должен быть словарем"
-            assert len(response_json) > 0, "Ответ не должен быть пустым"
-
-            expected_keys = ["approved", "delivered"]
-            for key in expected_keys:
-                assert key in response_json, f"В инвентаре нет ключа '{key}'"
-                assert isinstance(response_json[key], int), f"Значение ключа '{key}' должно быть целым числом"
-
-
+            assert response_json == expected_inventory, f"Инвентарь не соответствует ожидаемому. Ожидалось: {expected_inventory}, получено: {response_json}"
 
 
 
