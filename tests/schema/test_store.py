@@ -1,7 +1,10 @@
 import allure
 import requests
+import jsonschema
 import pytest
 
+from tests.schema.order_schema_store import ORDER_SCHEMA
+from tests.schema.order_schema_store import INVENTORY_SCHEMA
 
 BASE_URL = "http://5.181.109.28:9090/api/v3"
 
@@ -25,7 +28,7 @@ class TestStore:
 
         with allure.step("Проверка статуса ответа"):
             assert response.status_code == 200
-
+            jsonschema.validate(response_json, ORDER_SCHEMA)
 
         with allure.step("Проверка параметров питомца в ответе"):
             assert response_json['id'] == payload['id'], "id питомца не совпадает с ожидаемым"
@@ -35,9 +38,9 @@ class TestStore:
             assert response_json['complete'] == payload['complete'], "complete питомца не совпадает с ожидаемым"
 
     @allure.title("Получение информации о заказе по ID")
-    def test_get_order_by_id(self):
+    def test_get_order_by_id(self, create_order):
         with allure.step("Получение ID заказа"):
-            orderId = 1
+            orderId = create_order["id"]
 
         with allure.step("Отправка запроса на получение данных о заказе по ID"):
             response = requests.get(url=f"{BASE_URL}/store/order/{orderId}")
@@ -48,9 +51,9 @@ class TestStore:
             assert response_json['id'] == orderId
 
     @allure.title("Удаление заказа по id")
-    def test_delete_info_order(self):
+    def test_delete_info_order(self, create_order):
         with allure.step("Получение ID заказа"):
-            orderId = 1
+            orderId = create_order['id']
 
         with allure.step(f"Удаление заказа с ID {orderId}"):
             response = requests.delete(url=f"{BASE_URL}/store/order/{orderId}")
@@ -80,15 +83,8 @@ class TestStore:
 
         with allure.step("Проверка статуса ответа"):
             assert response.status_code == 200, "Код ответа не совпадает с ожидаемым"
+            jsonschema.validate(response_json, INVENTORY_SCHEMA)
 
-        with allure.step("Проверка структуры текущего инвентаря"):
-            assert list(response_json.keys()) == [
-                "approved"], f"Инвентарь должен содержать только ключ 'approved', получено: {list(response_json.keys())}"
-
-            assert isinstance(response_json["approved"],
-                              int), f"Значение 'approved' должно быть целым числом, получено: {type(response_json['approved'])}"
-            assert response_json[
-                       "approved"] >= 0, f"Значение 'approved' не может быть отрицательным, получено: {response_json['approved']}"
 
 
 
