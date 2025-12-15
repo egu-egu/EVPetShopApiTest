@@ -21,7 +21,7 @@ ORDER_SCHEMA = {
 "type": "boolean"
 }
 },
-"required": ["id", "petId", "quantity", "shipDate", "status", "complete"],
+"required": ["id", "petId", "quantity", "status", "complete"],
 "additionalProperties": False
 }
 
